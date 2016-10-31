@@ -1,1 +1,7 @@
 # 8IAR125-MiniProjetRaven
+
+developers : 
+	BRANGER Mathias 	BRAM23079405
+	CROUZET Matthieu	CROM12069406
+	MACE	Quentin		MACQ16029302
+
