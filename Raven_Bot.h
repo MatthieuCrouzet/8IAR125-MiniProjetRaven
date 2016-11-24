@@ -16,6 +16,7 @@
 #include "game/MovingEntity.h"
 #include "misc/utils.h"
 #include "Raven_TargetingSystem.h"
+#include "Fuzzy/FuzzyModule.h"
 
 
 class Raven_PathPlanner;
@@ -122,6 +123,12 @@ private:
   //initializes the bot's VB with its geometry
   void          SetUpVertexBuffer();
 
+  //fuzzy logic is used to determine the deviation of a gunshot.
+  FuzzyModule   m_FuzzyModule;
+
+  //this method initializes the fuzzy module with the appropriate fuzzy 
+  //variables and rule base.
+  void  InitializeFuzzyModule();
 
 public:
   

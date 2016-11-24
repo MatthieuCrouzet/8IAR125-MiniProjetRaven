@@ -109,7 +109,7 @@ void RocketLauncher::InitializeFuzzyModule()
   FzSet& Ammo_High = AmmoStatus.AddTriangularSet("Ammo_High", 8, 12, 40);
   FzSet& Ammo_Medium = AmmoStatus.AddTriangularSet("Ammo_Medium", 2, 8, 15);
   FzSet& Ammo_Low = AmmoStatus.AddTriangularSet("Ammo_Low", 1, 2, 10);
-  FzSet& Ammo_Out = AmmoStatus.AddTriangularSet("Ammo_Out", 0, 0, 0);
+  FzSet& Ammo_Out = AmmoStatus.AddLeftShoulderSet("Ammo_Out", 0, 0, 0);
 
   m_FuzzyModule.AddRule(FzAND(Target_VeryClose, Ammo_Loads), Undesirable);
   m_FuzzyModule.AddRule(FzAND(Target_VeryClose, Ammo_High), Undesirable);
@@ -143,7 +143,7 @@ void RocketLauncher::InitializeFuzzyModule()
 }
 
 
-//-------------------------------- Render -------------------------------------
+//-------------------------------- Render -------------------------------------7
 //-----------------------------------------------------------------------------
 void RocketLauncher::Render()
 {
