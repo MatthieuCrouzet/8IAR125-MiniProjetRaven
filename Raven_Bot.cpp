@@ -389,10 +389,12 @@ void Raven_Bot::FireWeapon(Vector2D pos)
 	double distToTarget = Vec2DDistance(Pos(), GetTargetBot()->Pos());
 	double velocity = Vec2DLength(GetTargetBot()->Velocity());
 	double timeVisible = m_pSensoryMem->GetTimeOpponentHasBeenVisible(GetTargetBot());
+	double deviation = 0;
 
 	m_FuzzyModule.Fuzzify("DistToTarget", distToTarget);
 	m_FuzzyModule.Fuzzify("Velocity", velocity);
 	m_FuzzyModule.Fuzzify("TimeVisible", timeVisible);
+	m_FuzzyModule.Fuzzify("Deviation", deviation);
 
 	double m_dDeviationScore = m_FuzzyModule.DeFuzzify("DeviationShot", FuzzyModule::max_av);
 	Vector2D vDeviation = Vec2DNormalize(GetTargetBot()->Velocity()) * m_dDeviationScore;
