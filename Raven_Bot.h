@@ -29,6 +29,7 @@ class Raven_Bot;
 class Goal_Think;
 class Raven_WeaponSystem;
 class Raven_SensoryMemory;
+class Raven_Team;
 
 
 
@@ -43,6 +44,9 @@ private:
 
   //alive, dead or spawning?
   Status                             m_Status;
+
+  //team
+  Raven_Team*                        m_Team;
 
   //a pointer to the world data
   Raven_Game*                        m_pWorld;
@@ -167,6 +171,7 @@ public:
   void          SetSpawning(){m_Status = spawning;}
   void          SetDead(){m_Status = dead;}
   void          SetAlive(){m_Status = alive;}
+  void          SetTeam(Raven_Team* team) { this->m_Team = team; }
 
   //returns a value indicating the time in seconds it will take the bot
   //to reach the given position at its current speed.
@@ -206,7 +211,7 @@ public:
   bool          canStepForward(Vector2D& PositionOfStep)const;
   bool          canStepBackward(Vector2D& PositionOfStep)const;
 
-  
+  Raven_Team* const                  GetTeam() { return m_Team; }
   Raven_Game* const                  GetWorld(){return m_pWorld;} 
   Raven_Steering* const              GetSteering(){return m_pSteering;}
   Raven_PathPlanner* const           GetPathPlanner(){return m_pPathPlanner;}

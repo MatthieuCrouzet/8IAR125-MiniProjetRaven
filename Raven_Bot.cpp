@@ -580,7 +580,42 @@ void Raven_Bot::Render()
   gdi->ClosedShape(m_vecBotVBTrans);
   
   //draw the head
-  gdi->BrownBrush();
+ // gdi->BrownBrush();
+  if (m_Team)
+  {
+	  switch (m_Team->GetColor()){
+	  case Raven_Team::BLACK:
+		  gdi->BlackBrush();
+		  break;
+	  case Raven_Team::BLUE:
+		  gdi->BlueBrush();
+		  break;
+	  case Raven_Team::GREEN:
+		  gdi->GreenBrush();
+		  break;
+	  case Raven_Team::GREY:
+		  gdi->GreyBrush();
+		  break;
+	  case Raven_Team::ORANGE:
+		  gdi->OrangeBrush();
+		  break;
+	  case Raven_Team::RED:
+		  gdi->RedBrush();
+		  break;
+	  case Raven_Team::WHITE:
+		  gdi->WhiteBrush();
+		  break;
+	  case Raven_Team::YELLOW:
+		  gdi->YellowBrush();
+		  break;
+	  default:
+	  gdi->BrownBrush();
+	  }
+  }
+  else {
+	  gdi->BrownBrush();  
+  }
+
   gdi->Circle(Pos(), 6.0 * Scale().x);
 
 

@@ -26,6 +26,8 @@
 #include "goals/Goal_Think.h"
 #include "goals/Raven_Goal_Types.h"
 
+#define INIT_TEAM_NUMBER 3
+
 
 
 //uncomment to write object creation/deletion to debug console
@@ -80,6 +82,13 @@ void Raven_Game::Clear()
     delete *it;
   }
 
+  //dete the teams
+  std::list<Raven_Team*>::iterator it_team = m_Teams.begin();
+  for (it_team; it_team != m_Teams.end(); ++it_team)
+  {
+	  delete *it_team;
+  }
+
   //delete any active projectiles
   std::list<Raven_Projectile*>::iterator curW = m_Projectiles.begin();
   for (curW; curW != m_Projectiles.end(); ++curW)
@@ -94,6 +103,7 @@ void Raven_Game::Clear()
   //clear the containers
   m_Projectiles.clear();
   m_Bots.clear();
+  m_Teams.clear();
 
   m_pSelectedBot = NULL;
 
@@ -173,6 +183,13 @@ void Raven_Game::Update()
       (*curBot)->Update();
     }  
   } 
+
+  //update the teams
+  std::list<Raven_Team*>::iterator curTeam = m_Teams.begin();
+  for (curTeam; curTeam != m_Teams.end(); ++curTeam)
+  {
+	  (*curTeam)->Update();
+  }
 
   //update the triggers
   m_pMap->UpdateTriggerSystem(m_Bots);
@@ -256,6 +273,21 @@ void Raven_Game::AddBots(unsigned int NumBotsToAdd)
     rb->GetSteering()->WallAvoidanceOn();
     rb->GetSteering()->SeparationOn();
 
+	int membersCount = -1;
+	Raven_Team* team = 0;
+
+	std::list<Raven_Team*>::const_iterator curTeam = m_Teams.begin();
+	for (curTeam; curTeam != m_Teams.end(); ++curTeam)
+	{
+		Raven_Team* temp = *curTeam;
+		if (temp->GetTeamSize() <= membersCount || membersCount == -1)
+		{
+			membersCount = temp->GetTeamSize();
+			team = temp;
+		}
+	}
+
+	team->AddTeamMate(rb);
     m_Bots.push_back(rb);
 
     //register the bot with the entity manager
@@ -392,6 +424,10 @@ bool Raven_Game::LoadMap(const std::string& filename)
   //make sure the entity manager is reset
   EntityMgr->Reset();
 
+  for (int i = 0; i < INIT_TEAM_NUMBER; i++) {
+	  m_Teams.push_back(new Raven_Team(i));
+	  
+  }
 
   //load the new map data
   if (m_pMap->LoadMap(filename))
