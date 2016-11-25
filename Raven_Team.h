@@ -17,13 +17,15 @@ class Raven_Team
 public:
 
 	enum { BLACK, BLUE, GREEN, GREY, ORANGE, RED, WHITE, YELLOW };
-	Raven_Team(int color);
+	Raven_Team(int id);
 
 	void AddTeamMate(Raven_Bot* bot);
 	void RemoveTeamMate(Raven_Bot* bot);
 
+	static void BrushColor(int id);
+
 	int GetTeamSize() const;
-	int GetColor() const;
+	int GetId() const;
 
 	void Update();
 
@@ -32,7 +34,7 @@ public:
 private:
 	std::list<Raven_Bot*> m_bots;
 
-	int m_color;
+	int m_id;
 
 };
 

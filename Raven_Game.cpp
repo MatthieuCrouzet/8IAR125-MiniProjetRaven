@@ -26,7 +26,7 @@
 #include "goals/Goal_Think.h"
 #include "goals/Raven_Goal_Types.h"
 
-#define INIT_TEAM_NUMBER 3
+#define INIT_TEAM_NUMBER 5
 
 
 
