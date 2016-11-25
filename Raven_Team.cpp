@@ -1,7 +1,9 @@
 #include "Raven_Team.h"
 #include "misc/Cgdi.h"
 
-Raven_Team::Raven_Team(int id) : m_id(id)
+Raven_Team::Raven_Team(int id, Raven_Game* game) : 
+	m_id(id),
+	m_pWorld(game)
 {
 }
 
@@ -15,6 +17,15 @@ void Raven_Team::RemoveTeamMate(Raven_Bot* bot) {
 	m_bots.remove(bot);
 	bot->SetTeam(this);
 
+}
+
+void Raven_Team::AddDroppedWeapon(Vector2D pos) {
+	m_DroppedWeapons.push_back(pos);
+}
+
+void Raven_Team::RemoveDroppedWeapon(Vector2D pos) {
+	m_DroppedWeapons.remove(pos);
+	
 }
 
 void Raven_Team::BrushColor(int id) {
@@ -87,6 +98,11 @@ int Raven_Team::GetTeamSize() const
 int Raven_Team::GetId() const
 {
 	return m_id;
+}
+
+Raven_Game* Raven_Team::GetWorld() const 
+{ 
+	return m_pWorld; 
 }
 
 

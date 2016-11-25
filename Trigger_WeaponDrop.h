@@ -11,6 +11,7 @@
 //-----------------------------------------------------------------------------
 #include "Triggers/Trigger.h"
 #include "Raven_Bot.h"
+#include "Raven_Game.h"
 
 class Trigger_WeaponDrop : public Trigger<Raven_Bot>
 {
@@ -22,10 +23,11 @@ private:
 	unsigned int m_WeaponType;
 	int m_Ammo;
 	int m_Team;
+	Raven_Game* m_pWorld;
 
 public :
 
-	Trigger_WeaponDrop(Vector2D pos, unsigned int weapon, int ammo, int team);
+	Trigger_WeaponDrop(Vector2D pos, unsigned int weapon, int ammo, int team, Raven_Game* world);
 	
 	void Update();
 

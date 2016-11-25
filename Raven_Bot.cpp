@@ -48,7 +48,8 @@ Raven_Bot::Raven_Bot(Raven_Game* world,Vector2D pos):
                  m_iScore(0),
                  m_Status(spawning),
                  m_bPossessed(false),
-                 m_dFieldOfView(DegsToRads(script->GetDouble("Bot_FOV")))
+                 m_dFieldOfView(DegsToRads(script->GetDouble("Bot_FOV"))),
+				 m_Team(0)
            
 {
   SetEntityType(type_bot);
@@ -559,12 +560,12 @@ bool Raven_Bot::canStepBackward(Vector2D& PositionOfStep)const
 
 
 void Raven_Bot::DropWeapon() {
-	if (m_Team) {
-		Raven_Weapon* w = m_pWeaponSys->GetCurrentWeapon();
-		Vector2D pos = m_pWorld->GetMap()->GetSpawnPoints().at(m_Team->GetId());
-		m_pWorld->GetMap()->AddWeaponDropTrigger(pos, w->GetType(), w->NumRoundsRemaining(), m_Team->GetId());
-		m_pWeaponSys->Initialize();
-		}
+	if (m_pWorld->IsTeamMode()) {
+		Raven_Weapon* currentWeapon = m_pWeaponSys->GetCurrentWeapon();
+		Vector2D pos = m_pWorld->GetMap()->GetSpawnPoints().at(m_Team->GetId()) + Vector2D(RandInt(-25, 25), RandInt(-25, 25));
+		m_pWorld->GetMap()->AddWeaponDropTrigger(pos, currentWeapon->GetType(), currentWeapon->NumRoundsRemaining(), m_Team->GetId(), m_pWorld);
+		m_Team->AddDroppedWeapon(pos);
+	}
 }
 
 //--------------------------- Render -------------------------------------
@@ -592,7 +593,7 @@ void Raven_Bot::Render()
   gdi->ClosedShape(m_vecBotVBTrans);
   
   //draw the head
-  if (m_Team)
+  if (m_pWorld->IsTeamMode())
 	  Raven_Team::BrushColor(m_Team->GetId());
   else {gdi->BrownBrush();}
 

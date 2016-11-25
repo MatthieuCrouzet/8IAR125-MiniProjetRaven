@@ -162,6 +162,12 @@ LRESULT CALLBACK WindowProc (HWND   hwnd,
 
            break;
 
+		 case 'T':
+
+			 g_pRaven->ChangeTeamMode(!g_pRaven->IsTeamMode());
+
+			 break;
+
 
          case VK_UP:
 

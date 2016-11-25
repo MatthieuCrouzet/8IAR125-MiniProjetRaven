@@ -6,11 +6,12 @@
 #include "Raven_WeaponSystem.h"
 
 
-Trigger_WeaponDrop::Trigger_WeaponDrop(Vector2D pos, unsigned int weaponType, int ammo, int team) :
+Trigger_WeaponDrop::Trigger_WeaponDrop(Vector2D pos, unsigned int weaponType, int ammo, int team, Raven_Game* world) :
 	Trigger<Raven_Bot>(BaseGameEntity::GetNextValidID()),
 	m_WeaponType(weaponType),
 	m_Ammo(ammo),
-	m_Team(team)
+	m_Team(team),
+	m_pWorld(world)
 {
 		SetPos(pos);
 		AddCircularTriggerRegion(pos, 5);
@@ -33,23 +34,35 @@ Trigger_WeaponDrop::Trigger_WeaponDrop(Vector2D pos, unsigned int weaponType, in
 }
 
 void Trigger_WeaponDrop::Update()
-{}
+{
+	if (!m_pWorld->IsTeamMode())
+	{
+		SetToBeRemovedFromGame();
+	}
+}
 
 void Trigger_WeaponDrop::Try(Raven_Bot* pBot)
 {
-	if (this->isActive() && pBot->GetTeam()->GetId() == m_Team && this->isTouchingTrigger(pBot->Pos(), pBot->BRadius()))
+	if (m_pWorld->IsTeamMode()) 
+	{
+		if (this->isActive() && pBot->GetTeam()->GetId() == m_Team && this->isTouchingTrigger(pBot->Pos(), pBot->BRadius()))
 		{
-		pBot->GetWeaponSys()->AddWeapon(EntityType());
-		SetToBeRemovedFromGame();
+			pBot->GetWeaponSys()->AddWeapon(EntityType());
+			pBot->GetTeam()->RemoveDroppedWeapon(m_vPosition);
+			SetToBeRemovedFromGame();
 		}
+	}
 }
+
 
 void Trigger_WeaponDrop::Render()
  {
 	if (isActive())
-		 {
-		gdi->PinkPen();
-		gdi->BlackBrush();
-		gdi->Circle(m_vPosition, 5);
-		}
+	{
+		gdi->BlackPen();
+		Raven_Team::BrushColor(m_Team);
+		int sz = 5;
+		gdi->Rect(Pos().x - sz, Pos().y - sz, Pos().x + sz + 1, Pos().y + sz + 1);
+		//gdi->Circle(m_vPosition, 5);
 	}
+}

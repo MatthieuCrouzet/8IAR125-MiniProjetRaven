@@ -1,6 +1,7 @@
 #include "Raven_TargetingSystem.h"
 #include "Raven_Bot.h"
 #include "Raven_SensoryMemory.h"
+#include "Raven_Game.h"
 
 
 
@@ -28,15 +29,19 @@ void Raven_TargetingSystem::Update()
   for (curBot; curBot != SensedBots.end(); ++curBot)
   {
     //make sure the bot is alive and that it is not the owner or in the same team
-	  if ((*curBot)->isAlive() && (*curBot != m_pOwner) && (*curBot)->GetTeam() != m_pOwner->GetTeam())
+	  if ((*curBot)->isAlive() && (*curBot != m_pOwner))
     {
-      double dist = Vec2DDistanceSq((*curBot)->Pos(), m_pOwner->Pos());
+		  if (!(*curBot)->GetWorld()->IsTeamMode() || (*curBot)->GetTeam() != m_pOwner->GetTeam())
+		  {
 
-      if (dist < ClosestDistSoFar)
-      {
-        ClosestDistSoFar = dist;
-        m_pCurrentTarget = *curBot;
-      }
+			  double dist = Vec2DDistanceSq((*curBot)->Pos(), m_pOwner->Pos());
+
+			  if (dist < ClosestDistSoFar)
+			  {
+				  ClosestDistSoFar = dist;
+				  m_pCurrentTarget = *curBot;
+			  }
+		  }
     }
   }
 }

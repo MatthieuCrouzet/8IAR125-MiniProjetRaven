@@ -46,7 +46,9 @@ private:
   std::list<Raven_Bot*>            m_Bots;
 
   //a list of all the teams that are inhabiting the map
-  std::list<Raven_Team*>            m_Teams;
+  std::list<Raven_Team*>           m_Teams;
+
+  bool	                           m_TeamMode;
 
   //the user may select a bot to control manually. This is a pointer to that
   //bot
@@ -97,6 +99,8 @@ public:
   //loads an environment from a file
   bool LoadMap(const std::string& FileName); 
 
+  void ChangeTeamMode(bool teamMode);
+  bool IsTeamMode() { return m_TeamMode; }
   void AddBots(unsigned int NumBotsToAdd);
   void AddRocket(Raven_Bot* shooter, Vector2D target);
   void AddRailGunSlug(Raven_Bot* shooter, Vector2D target);
