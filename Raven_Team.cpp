@@ -48,6 +48,37 @@ void Raven_Team::BrushColor(int id) {
 	}
 }
 
+void Raven_Team::PenColor(int id) {
+	switch (id) {
+	case Raven_Team::BLACK:
+		gdi->BlackPen();
+		break;
+	case Raven_Team::BLUE:
+		gdi->BluePen();
+		break;
+	case Raven_Team::GREEN:
+		gdi->GreenPen();
+		break;
+	case Raven_Team::GREY:
+		gdi->GreyPen();
+		break;
+	case Raven_Team::ORANGE:
+		gdi->OrangePen();
+		break;
+	case Raven_Team::RED:
+		gdi->RedPen();
+		break;
+	case Raven_Team::WHITE:
+		gdi->WhitePen();
+		break;
+	case Raven_Team::YELLOW:
+		gdi->YellowPen();
+		break;
+	default:
+		gdi->BrownPen();
+	}
+}
+
 int Raven_Team::GetTeamSize() const
 {
 	return m_bots.size();

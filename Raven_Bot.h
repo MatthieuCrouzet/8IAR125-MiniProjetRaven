@@ -169,9 +169,11 @@ public:
   bool          isSpawning()const{return m_Status == spawning;}
   
   void          SetSpawning(){m_Status = spawning;}
-  void          SetDead(){m_Status = dead;}
+  void          SetDead(){ m_Status = dead; DropWeapon(); }
   void          SetAlive(){m_Status = alive;}
   void          SetTeam(Raven_Team* team) { this->m_Team = team; }
+
+  void          DropWeapon();
 
   //returns a value indicating the time in seconds it will take the bot
   //to reach the given position at its current speed.

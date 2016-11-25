@@ -19,6 +19,8 @@
 #include "goals/Raven_Goal_Types.h"
 #include "goals/Goal_Think.h"
 
+#include "armory\Raven_Weapon.h"
+
 
 #include "Debug/DebugConsole.h"
 
@@ -553,6 +555,16 @@ bool Raven_Bot::canStepBackward(Vector2D& PositionOfStep)const
   PositionOfStep = Pos() - Facing() * StepDistance - Facing() * BRadius();
 
   return canWalkTo(PositionOfStep);
+}
+
+
+void Raven_Bot::DropWeapon() {
+	if (m_Team) {
+		Raven_Weapon* w = m_pWeaponSys->GetCurrentWeapon();
+		Vector2D pos = m_pWorld->GetMap()->GetSpawnPoints().at(m_Team->GetId());
+		m_pWorld->GetMap()->AddWeaponDropTrigger(pos, w->GetType(), w->NumRoundsRemaining(), m_Team->GetId());
+		m_pWeaponSys->Initialize();
+		}
 }
 
 //--------------------------- Render -------------------------------------

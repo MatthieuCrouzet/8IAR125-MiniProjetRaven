@@ -6,11 +6,13 @@
 #include "game/EntityManager.h"
 #include "constants.h"
 #include "lua/Raven_Scriptor.h"
+#include "Raven_Team.h"
 
 #include "triggers/Trigger_HealthGiver.h"
 #include "triggers/Trigger_WeaponGiver.h"
 #include "triggers/Trigger_OnButtonSendMsg.h"
 #include "triggers/Trigger_SoundNotify.h"
+#include "Trigger_WeaponDrop.h"
 
 #include "Raven_UserOptions.h"
 
@@ -161,8 +163,17 @@ void Raven_Map::AddWeapon_Giver(int type_of_weapon, std::ifstream& in)
 
   //register the entity 
   EntityMgr->RegisterEntity(wg);
+
 }
 
+
+//----------------------- AddWeapon_Drop ----------------------------------
+//-----------------------------------------------------------------------------
+
+void Raven_Map::AddWeaponDropTrigger(Vector2D pos, unsigned int weapon, int ammo, int team) {
+	m_TriggerSystem.Register(new Trigger_WeaponDrop(pos, weapon, ammo, team));
+	
+}
 
 //------------------------- LoadMap ------------------------------------
 //
@@ -404,10 +415,11 @@ void Raven_Map::Render()
   }
 
   std::vector<Vector2D>::const_iterator curSp = m_SpawnPoints.begin();
-  for (curSp; curSp != m_SpawnPoints.end(); ++curSp)
+  int i = 0;
+  for (curSp; curSp != m_SpawnPoints.end(); ++curSp,++i)
   {
     gdi->GreyBrush();
-    gdi->GreyPen();
+	Raven_Team::PenColor(i);
     gdi->Circle(*curSp, 7);
   }
 }

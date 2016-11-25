@@ -23,6 +23,7 @@ public:
 	void RemoveTeamMate(Raven_Bot* bot);
 
 	static void BrushColor(int id);
+	static void PenColor(int id);
 
 	int GetTeamSize() const;
 	int GetId() const;
