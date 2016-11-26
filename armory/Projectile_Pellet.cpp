@@ -18,7 +18,8 @@
 //-----------------------------------------------------------------------------
 Pellet::Pellet(Raven_Bot* shooter, Vector2D target):
 
-        Raven_Projectile(target,
+        Raven_Projectile(shooter->GetTeam(),
+						 target,
                          shooter->GetWorld(),
                          shooter->ID(),
                          shooter->Pos(),
@@ -85,8 +86,8 @@ void Pellet::TestForImpact()
   //the start position intersects with any bots.
   Raven_Bot* hit = GetClosestIntersectingBot(m_vOrigin, m_vImpactPoint);
   
-  //if no bots hit just return;
-  if (!hit) return;
+  //if no bots hit or they're in the same team, just return;
+  if (!hit || (m_iTeam == hit->GetTeam())) return;
 
   //determine the impact point with the bot's bounding circle so that the
   //shell can be rendered properly

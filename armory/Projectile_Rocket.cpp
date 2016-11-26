@@ -15,7 +15,8 @@
 //-----------------------------------------------------------------------------
 Rocket::Rocket(Raven_Bot* shooter, Vector2D target):
 
-        Raven_Projectile(target,
+		Raven_Projectile(shooter->GetTeam(),
+						 target,
                          shooter->GetWorld(),
                          shooter->ID(),
                          shooter->Pos(),
@@ -75,8 +76,8 @@ void Rocket::TestForImpact()
     //and previous position intersects with any bots.
     Raven_Bot* hit = GetClosestIntersectingBot(m_vPosition - m_vVelocity, m_vPosition);
     
-    //if hit
-    if (hit)
+    //if hit and not in the same team
+    if (hit && (m_iTeam != hit->GetTeam()))
     {
       m_bImpacted = true;
 
@@ -132,7 +133,7 @@ void Rocket::InflictDamageOnBotsWithinBlastRadius()
 
   for (curBot; curBot != m_pWorld->GetAllBots().end(); ++curBot)
   {
-    if (Vec2DDistance(Pos(), (*curBot)->Pos()) < m_dBlastRadius + (*curBot)->BRadius())
+	  if (Vec2DDistance(Pos(), (*curBot)->Pos()) < m_dBlastRadius + (*curBot)->BRadius() && (m_iTeam != (*curBot)->GetTeam()))
     {
       //send a message to the bot to let it know it's been hit, and who the
       //shot came from

@@ -17,7 +17,8 @@
 //-----------------------------------------------------------------------------
 Slug::Slug(Raven_Bot* shooter, Vector2D target):
 
-        Raven_Projectile(target,
+		Raven_Projectile(shooter->GetTeam(),
+						 target,
                          shooter->GetWorld(),
                          shooter->ID(),
                          shooter->Pos(),
@@ -91,13 +92,17 @@ void Slug::TestForImpact()
   std::list<Raven_Bot*>::iterator it;
   for (it=hits.begin(); it != hits.end(); ++it)
   {
-    //send a message to the bot to let it know it's been hit, and who the
-    //shot came from
-    Dispatcher->DispatchMsg(SEND_MSG_IMMEDIATELY,
-                            m_iShooterID,
-                            (*it)->ID(),
-                            Msg_TakeThatMF,
-                            (void*)&m_iDamageInflicted);
+	  //Are they in the same team?
+	  if (m_iTeam != (*it)->GetTeam())
+	  {
+		  //send a message to the bot to let it know it's been hit, and who the
+		  //shot came from
+		  Dispatcher->DispatchMsg(SEND_MSG_IMMEDIATELY,
+			  m_iShooterID,
+			  (*it)->ID(),
+			  Msg_TakeThatMF,
+			  (void*)&m_iDamageInflicted);
+	  }
     
   }
 }
