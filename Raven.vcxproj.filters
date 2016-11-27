@@ -270,6 +270,7 @@
     </ClCompile>
     <ClCompile Include="goals\Goal_FollowPathDodging.cpp">
       <Filter>AI\goals\composite</Filter>
+	</ClCompile>
     <ClCompile Include="Raven_Team.cpp">
       <Filter>Game</Filter>
     </ClCompile>
@@ -616,6 +617,7 @@
     </ClInclude>
     <ClInclude Include="goals\Goal_FollowPathDodging.h">
       <Filter>AI\goals\composite</Filter>
+	</ClInclude>
     <ClInclude Include="Raven_Team.h">
       <Filter>Game</Filter>
     </ClInclude>
