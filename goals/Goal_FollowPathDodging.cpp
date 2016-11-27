@@ -16,7 +16,7 @@
 //-----------------------------------------------------------------------------
 Goal_FollowPathDodging::
 Goal_FollowPathDodging(Raven_Bot*          pBot,
-std::list<PathEdge> path) :Goal_Composite<Raven_Bot>(pBot, goal_follow_path),
+std::list<PathEdge> path) :Goal_Composite<Raven_Bot>(pBot, goal_follow_path_dodging),
 m_Path(path)
 {
 }
@@ -47,7 +47,7 @@ void Goal_FollowPathDodging::Activate()
 			//calculate the distance to the target
 			double dist = ToTarget.Length();
 
-			if (dist>80 && (m_pOwner->canStepLeft(dummy) || m_pOwner->canStepRight(dummy)))
+			if (dist>30 && (m_pOwner->canStepLeft(dummy) || m_pOwner->canStepRight(dummy)))
 			{
 				AddSubgoal(new Goal_DodgeSideToSide(m_pOwner));
 			}
