@@ -92,7 +92,7 @@ public:
   Raven_Map();  
   ~Raven_Map();
 
-  void Render();
+  void Render(bool teamMode);
 
   //loads an environment from a file
   bool LoadMap(const std::string& FileName); 
@@ -100,6 +100,8 @@ public:
   //adds a wall and returns a pointer to that wall. (this method can be
   //used by objects such as doors to add walls to the environment)
   Wall2D* AddWall(Vector2D from, Vector2D to);
+
+  void    AddWeaponDropTrigger(Vector2D pos, unsigned int weapon, int ammo, int team, Raven_Game* game);
 
   void    AddSoundTrigger(Raven_Bot* pSoundSource, double range);
 

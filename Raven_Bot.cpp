@@ -19,6 +19,8 @@
 #include "goals/Raven_Goal_Types.h"
 #include "goals/Goal_Think.h"
 
+#include "armory\Raven_Weapon.h"
+
 
 #include "Debug/DebugConsole.h"
 
@@ -46,7 +48,8 @@ Raven_Bot::Raven_Bot(Raven_Game* world,Vector2D pos):
                  m_iScore(0),
                  m_Status(spawning),
                  m_bPossessed(false),
-                 m_dFieldOfView(DegsToRads(script->GetDouble("Bot_FOV")))
+                 m_dFieldOfView(DegsToRads(script->GetDouble("Bot_FOV"))),
+				 m_Team(0)
            
 {
   SetEntityType(type_bot);
@@ -81,6 +84,8 @@ Raven_Bot::Raven_Bot(Raven_Game* world,Vector2D pos):
                                         script->GetDouble("Bot_AimPersistance"));
 
   m_pSensoryMem = new Raven_SensoryMemory(this, script->GetDouble("Bot_MemorySpan"));
+
+ // InitializeFuzzyModule();
 }
 
 //-------------------------------- dtor ---------------------------------------
@@ -384,7 +389,88 @@ void Raven_Bot::ChangeWeapon(unsigned int type)
 //-----------------------------------------------------------------------------
 void Raven_Bot::FireWeapon(Vector2D pos)
 {
-  m_pWeaponSys->ShootAt(pos);
+	double distToTarget = Vec2DDistance(Pos(), GetTargetBot()->Pos());
+	double velocity = Vec2DLength(GetTargetBot()->Velocity());
+	double timeVisible = m_pSensoryMem->GetTimeOpponentHasBeenVisible(GetTargetBot());
+	double deviation = 0;
+
+	m_FuzzyModule.Fuzzify("DistToTarget", distToTarget);
+	m_FuzzyModule.Fuzzify("Velocity", velocity);
+	m_FuzzyModule.Fuzzify("TimeVisible", timeVisible);
+	m_FuzzyModule.Fuzzify("Deviation", deviation);
+
+	double m_dDeviationScore = m_FuzzyModule.DeFuzzify("DeviationShot", FuzzyModule::max_av);
+	Vector2D vDeviation = Vec2DNormalize(GetTargetBot()->Velocity()) * m_dDeviationScore;
+
+	m_pWeaponSys->ShootAt(pos + vDeviation);
+}
+
+//-------------------------  InitializeFuzzyModule ----------------------------
+//
+//  set up some fuzzy variables and rules
+//-----------------------------------------------------------------------------
+void Raven_Bot::InitializeFuzzyModule()
+{
+	FuzzyVariable& DistToTarget = m_FuzzyModule.CreateFLV("DistToTarget");
+
+	FzSet& Target_Close = DistToTarget.AddLeftShoulderSet("Target_Close", 0, 30, 100);
+	FzSet& Target_Medium = DistToTarget.AddTriangularSet("Target_Medium", 30, 75, 300);
+	FzSet& Target_Far = DistToTarget.AddRightShoulderSet("Target_Far", 75, 300, 1000);
+
+	FuzzyVariable& Velocity = m_FuzzyModule.CreateFLV("Velocity");
+
+	FzSet& Velocity_Low = Velocity.AddLeftShoulderSet("Velocity_Low", 0, 25, 75);
+	FzSet& Velocity_Medium = Velocity.AddTriangularSet("Velocity_Medium", 25, 75, 195);
+	FzSet& Velocity_High = Velocity.AddRightShoulderSet("Velocity_High", 75, 150, 300);
+
+	FuzzyVariable& TimeVisible = m_FuzzyModule.CreateFLV("TimeVisible");
+
+	FzSet& Time_Low = TimeVisible.AddLeftShoulderSet("Time_Low", 0, 50, 200);
+	FzSet& Time_Medium = TimeVisible.AddTriangularSet("Time_Medium", 50, 200, 500);
+	FzSet& Time_High = TimeVisible.AddRightShoulderSet("Time_High", 200, 500, 1000);
+
+	FuzzyVariable& Deviation = m_FuzzyModule.CreateFLV("Deviation");
+
+	FzSet& No_Deviation = Deviation.AddLeftShoulderSet("No_Deviation", 0, 0, 0);
+	FzSet& Low_Deviation = Deviation.AddTriangularSet("Low_Deviation", 0, 75, 300);
+	FzSet& High_Deviation = Deviation.AddRightShoulderSet("High_Deviation", 75, 300, 1000);
+
+
+	m_FuzzyModule.AddRule(FzAND(Target_Close, Velocity_Low, Time_Low), No_Deviation);
+	m_FuzzyModule.AddRule(FzAND(Target_Close, Velocity_Low, Time_Medium), No_Deviation);
+	m_FuzzyModule.AddRule(FzAND(Target_Close, Velocity_Low, Time_High), No_Deviation);
+
+	m_FuzzyModule.AddRule(FzAND(Target_Close, Velocity_Medium, Time_Low), No_Deviation);
+	m_FuzzyModule.AddRule(FzAND(Target_Close, Velocity_Medium, Time_Medium), No_Deviation);
+	m_FuzzyModule.AddRule(FzAND(Target_Close, Velocity_Medium, Time_High), No_Deviation);
+
+	m_FuzzyModule.AddRule(FzAND(Target_Close, Velocity_High, Time_Low), Low_Deviation);
+	m_FuzzyModule.AddRule(FzAND(Target_Close, Velocity_High, Time_Medium), Low_Deviation);
+	m_FuzzyModule.AddRule(FzAND(Target_Close, Velocity_High, Time_High), Low_Deviation);
+
+	m_FuzzyModule.AddRule(FzAND(Target_Medium, Velocity_Low, Time_Low), Low_Deviation);
+	m_FuzzyModule.AddRule(FzAND(Target_Medium, Velocity_Low, Time_Medium), Low_Deviation);
+	m_FuzzyModule.AddRule(FzAND(Target_Medium, Velocity_Low, Time_High), Low_Deviation);
+
+	m_FuzzyModule.AddRule(FzAND(Target_Medium, Velocity_Medium, Time_Low), Low_Deviation);
+	m_FuzzyModule.AddRule(FzAND(Target_Medium, Velocity_Medium, Time_Medium), Low_Deviation);
+	m_FuzzyModule.AddRule(FzAND(Target_Medium, Velocity_Medium, Time_High), High_Deviation);
+
+	m_FuzzyModule.AddRule(FzAND(Target_Medium, Velocity_High, Time_Low), Low_Deviation);
+	m_FuzzyModule.AddRule(FzAND(Target_Medium, Velocity_High, Time_Medium), High_Deviation);
+	m_FuzzyModule.AddRule(FzAND(Target_Medium, Velocity_High, Time_High), High_Deviation);
+
+	m_FuzzyModule.AddRule(FzAND(Target_Far, Velocity_Low, Time_Low), Low_Deviation);
+	m_FuzzyModule.AddRule(FzAND(Target_Far, Velocity_Low, Time_Medium), High_Deviation);
+	m_FuzzyModule.AddRule(FzAND(Target_Far, Velocity_Low, Time_High), High_Deviation);
+
+	m_FuzzyModule.AddRule(FzAND(Target_Far, Velocity_Medium, Time_Low), High_Deviation);
+	m_FuzzyModule.AddRule(FzAND(Target_Far, Velocity_Medium, Time_Medium), High_Deviation);
+	m_FuzzyModule.AddRule(FzAND(Target_Far, Velocity_Medium, Time_High), High_Deviation);
+
+	m_FuzzyModule.AddRule(FzAND(Target_Far, Velocity_High, Time_Low), High_Deviation);
+	m_FuzzyModule.AddRule(FzAND(Target_Far, Velocity_High, Time_Medium), High_Deviation);
+	m_FuzzyModule.AddRule(FzAND(Target_Far, Velocity_High, Time_High), High_Deviation);
 }
 
 //----------------- CalculateExpectedTimeToReachPosition ----------------------
@@ -472,6 +558,16 @@ bool Raven_Bot::canStepBackward(Vector2D& PositionOfStep)const
   return canWalkTo(PositionOfStep);
 }
 
+
+void Raven_Bot::DropWeapon() {
+	if (m_pWorld->IsTeamMode()) {
+		Raven_Weapon* currentWeapon = m_pWeaponSys->GetCurrentWeapon();
+		Vector2D pos = m_pWorld->GetMap()->GetSpawnPoints().at(m_Team->GetId()) + Vector2D(RandInt(-25, 25), RandInt(-25, 25));
+		m_pWorld->GetMap()->AddWeaponDropTrigger(pos, currentWeapon->GetType(), currentWeapon->NumRoundsRemaining(), m_Team->GetId(), m_pWorld);
+		m_Team->AddDroppedWeapon(pos);
+	}
+}
+
 //--------------------------- Render -------------------------------------
 //
 //------------------------------------------------------------------------
@@ -497,7 +593,10 @@ void Raven_Bot::Render()
   gdi->ClosedShape(m_vecBotVBTrans);
   
   //draw the head
-  gdi->BrownBrush();
+  if (m_pWorld->IsTeamMode())
+	  Raven_Team::BrushColor(m_Team->GetId());
+  else {gdi->BrownBrush();}
+
   gdi->Circle(Pos(), 6.0 * Scale().x);
 
 

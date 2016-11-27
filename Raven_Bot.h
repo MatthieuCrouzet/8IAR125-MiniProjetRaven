@@ -16,6 +16,7 @@
 #include "game/MovingEntity.h"
 #include "misc/utils.h"
 #include "Raven_TargetingSystem.h"
+#include "Fuzzy/FuzzyModule.h"
 
 
 class Raven_PathPlanner;
@@ -28,6 +29,7 @@ class Raven_Bot;
 class Goal_Think;
 class Raven_WeaponSystem;
 class Raven_SensoryMemory;
+class Raven_Team;
 
 
 
@@ -42,6 +44,9 @@ private:
 
   //alive, dead or spawning?
   Status                             m_Status;
+
+  //team
+  Raven_Team*                        m_Team;
 
   //a pointer to the world data
   Raven_Game*                        m_pWorld;
@@ -122,6 +127,12 @@ private:
   //initializes the bot's VB with its geometry
   void          SetUpVertexBuffer();
 
+  //fuzzy logic is used to determine the deviation of a gunshot.
+  FuzzyModule   m_FuzzyModule;
+
+  //this method initializes the fuzzy module with the appropriate fuzzy 
+  //variables and rule base.
+  void  InitializeFuzzyModule();
 
 public:
   
@@ -158,8 +169,11 @@ public:
   bool          isSpawning()const{return m_Status == spawning;}
   
   void          SetSpawning(){m_Status = spawning;}
-  void          SetDead(){m_Status = dead;}
+  void          SetDead(){ m_Status = dead; DropWeapon(); }
   void          SetAlive(){m_Status = alive;}
+  void          SetTeam(Raven_Team* team) { this->m_Team = team; }
+
+  void          DropWeapon();
 
   //returns a value indicating the time in seconds it will take the bot
   //to reach the given position at its current speed.
@@ -199,7 +213,7 @@ public:
   bool          canStepForward(Vector2D& PositionOfStep)const;
   bool          canStepBackward(Vector2D& PositionOfStep)const;
 
-  
+  Raven_Team* const                  GetTeam() { return m_Team; }
   Raven_Game* const                  GetWorld(){return m_pWorld;} 
   Raven_Steering* const              GetSteering(){return m_pSteering;}
   Raven_PathPlanner* const           GetPathPlanner(){return m_pPathPlanner;}

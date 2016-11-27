@@ -6,11 +6,13 @@
 #include "game/EntityManager.h"
 #include "constants.h"
 #include "lua/Raven_Scriptor.h"
+#include "Raven_Team.h"
 
 #include "triggers/Trigger_HealthGiver.h"
 #include "triggers/Trigger_WeaponGiver.h"
 #include "triggers/Trigger_OnButtonSendMsg.h"
 #include "triggers/Trigger_SoundNotify.h"
+#include "Trigger_WeaponDrop.h"
 
 #include "Raven_UserOptions.h"
 
@@ -161,8 +163,17 @@ void Raven_Map::AddWeapon_Giver(int type_of_weapon, std::ifstream& in)
 
   //register the entity 
   EntityMgr->RegisterEntity(wg);
+
 }
 
+
+//----------------------- AddWeapon_Drop ----------------------------------
+//-----------------------------------------------------------------------------
+
+void Raven_Map::AddWeaponDropTrigger(Vector2D pos, unsigned int weapon, int ammo, int team, Raven_Game* game) {
+	m_TriggerSystem.Register(new Trigger_WeaponDrop(pos, weapon, ammo, team,game));
+	
+}
 
 //------------------------- LoadMap ------------------------------------
 //
@@ -377,7 +388,7 @@ Vector2D Raven_Map::GetRandomNodeLocation()const
 
 //--------------------------- Render ------------------------------------------
 //-----------------------------------------------------------------------------
-void Raven_Map::Render()
+void Raven_Map::Render(bool teamMode)
 {
   //render the navgraph
   if (UserOptions->m_bShowGraph)
@@ -404,10 +415,15 @@ void Raven_Map::Render()
   }
 
   std::vector<Vector2D>::const_iterator curSp = m_SpawnPoints.begin();
-  for (curSp; curSp != m_SpawnPoints.end(); ++curSp)
+  int i = 0;
+  for (curSp; curSp != m_SpawnPoints.end(); ++curSp,++i)
   {
     gdi->GreyBrush();
-    gdi->GreyPen();
+	if (teamMode)
+		Raven_Team::PenColor(i);	
+	else
+		gdi->GreyPen();
+
     gdi->Circle(*curSp, 7);
   }
 }

@@ -19,6 +19,7 @@
 
 class Raven_Game;
 class Raven_Bot;
+class Raven_Team;
 
 
 class Raven_Projectile : public MovingEntity
@@ -55,6 +56,10 @@ protected:
   //to enable the shot to be rendered for a specific length of time
   double       m_dTimeOfCreation;
 
+  //This is to know the Team of the shooter
+  //Very useful to avoid friendly fire damage
+  Raven_Team*		m_iTeam;
+
   Raven_Bot*            GetClosestIntersectingBot(Vector2D From,
                                                   Vector2D To)const;
 
@@ -64,25 +69,26 @@ protected:
 
 public:
 
-  Raven_Projectile(Vector2D  target,   //the target's position
-                   Raven_Game* world,  //a pointer to the world data
-                   int      ShooterID, //the ID of the bot that fired this shot
-                   Vector2D origin,  //the start position of the projectile
-                   Vector2D heading,   //the heading of the projectile
-                   int      damage,    //how much damage it inflicts
-                   double    scale,    
-                   double    MaxSpeed, 
-                   double    mass,
-                   double    MaxForce):  MovingEntity(origin,
-                                                     scale,
-                                                     Vector2D(0,0),
-                                                     MaxSpeed,
-                                                     heading,
-                                                     mass,
-                                                     Vector2D(scale, scale),
-                                                     0, //max turn rate irrelevant here, all shots go straight
-                                                     MaxForce),
-
+	Raven_Projectile(Raven_Team* team,           //team ID of the shooter
+					Vector2D  target,   //the target's position
+					Raven_Game* world,  //a pointer to the world data
+					int      ShooterID, //the ID of the bot that fired this shot
+					Vector2D origin,  //the start position of the projectile
+					Vector2D heading,   //the heading of the projectile
+					int      damage,    //how much damage it inflicts
+					double    scale,
+					double    MaxSpeed,
+					double    mass,
+					double    MaxForce) : MovingEntity(origin,
+														scale,
+														Vector2D(0, 0),
+														MaxSpeed,
+														heading,
+														mass,
+														Vector2D(scale, scale),
+														0, //max turn rate irrelevant here, all shots go straight
+														MaxForce),
+										m_iTeam(team),
                                         m_vTarget(target),
                                         m_bDead(false),
                                         m_bImpacted(false),

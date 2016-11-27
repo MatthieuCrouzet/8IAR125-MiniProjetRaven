@@ -270,6 +270,11 @@
     </ClCompile>
     <ClCompile Include="goals\Goal_FollowPathDodging.cpp">
       <Filter>AI\goals\composite</Filter>
+    <ClCompile Include="Raven_Team.cpp">
+      <Filter>Game</Filter>
+    </ClCompile>
+    <ClCompile Include="Trigger_WeaponDrop.cpp">
+      <Filter>AI\Triggers</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -611,6 +616,11 @@
     </ClInclude>
     <ClInclude Include="goals\Goal_FollowPathDodging.h">
       <Filter>AI\goals\composite</Filter>
+    <ClInclude Include="Raven_Team.h">
+      <Filter>Game</Filter>
+    </ClInclude>
+    <ClInclude Include="Trigger_WeaponDrop.h">
+      <Filter>AI\Triggers</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

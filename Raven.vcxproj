@@ -310,6 +310,7 @@
       <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='boundschecker|Win32'">%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
+    <ClCompile Include="Raven_Team.cpp" />
     <ClCompile Include="Raven_UserOptions.cpp">
       <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -530,6 +531,7 @@
       <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='boundschecker|Win32'">%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
+    <ClCompile Include="Trigger_WeaponDrop.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="goals\Goal_FollowPathDodging.h" />
@@ -560,6 +562,7 @@
     <ClInclude Include="GraveMarkers.h" />
     <ClInclude Include="Raven_Door.h" />
     <ClInclude Include="Raven_ObjectEnumerations.h" />
+    <ClInclude Include="Raven_Team.h" />
     <ClInclude Include="Raven_UserOptions.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="goals\Raven_Goal_Types.h" />
@@ -645,6 +648,7 @@
     <ClInclude Include="..\Common\2D\Wall2D.h" />
     <ClInclude Include="..\Common\2D\WallIntersectionTests.h" />
     <ClInclude Include="..\Common\misc\WindowUtils.h" />
+    <ClInclude Include="Trigger_WeaponDrop.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Params.lua" />
