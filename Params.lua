@@ -179,5 +179,17 @@ Pellet_Scale       = Bot_Scale
 Pellet_Persistance = 0.1
 Pellet_Damage      = 1
 
+GrenadeLauncher_FiringFreq			= 1.25
+GrenadeLauncher_DefaultRounds		= 15
+GrenadeLauncher_MaxRoundsCarried	= 25
+GrenadeLauncher_IdealRange			= 150
+GrenadeLauncher_SoundRange			= 100
 
-  
+Grenade_BlastRadius = 10
+Grenade_MaxSpeed    = 2
+Grenade_Mass        = 0.1
+Grenade_MaxForce    = 1.0
+Grenade_Scale       = Bot_Scale
+Grenade_Damage      = 10
+Grenade_ExplosionDecayRate = 1.0   --how fast the explosion occurs (in secs)
+Grenade_ExplosionTimeout = 3.0   --how time before the explosion occurs (in secs)
