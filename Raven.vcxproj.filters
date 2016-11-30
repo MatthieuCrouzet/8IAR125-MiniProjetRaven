@@ -270,12 +270,18 @@
     </ClCompile>
     <ClCompile Include="goals\Goal_FollowPathDodging.cpp">
       <Filter>AI\goals\composite</Filter>
-	</ClCompile>
+    </ClCompile>
     <ClCompile Include="Raven_Team.cpp">
       <Filter>Game</Filter>
     </ClCompile>
     <ClCompile Include="Trigger_WeaponDrop.cpp">
       <Filter>AI\Triggers</Filter>
+    </ClCompile>
+    <ClCompile Include="armory\Projectile_Grenade.cpp">
+      <Filter>Game\weapons &amp; projectiles\projectiles</Filter>
+    </ClCompile>
+    <ClCompile Include="armory\Weapon_GrenadeLauncher.cpp">
+      <Filter>Game\weapons &amp; projectiles\weapons</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -617,12 +623,18 @@
     </ClInclude>
     <ClInclude Include="goals\Goal_FollowPathDodging.h">
       <Filter>AI\goals\composite</Filter>
-	</ClInclude>
+    </ClInclude>
     <ClInclude Include="Raven_Team.h">
       <Filter>Game</Filter>
     </ClInclude>
     <ClInclude Include="Trigger_WeaponDrop.h">
       <Filter>AI\Triggers</Filter>
+    </ClInclude>
+    <ClInclude Include="armory\Projectile_Grenade.h">
+      <Filter>Game\weapons &amp; projectiles\projectiles</Filter>
+    </ClInclude>
+    <ClInclude Include="armory\Weapon_GrenadeLauncher.h">
+      <Filter>Game\weapons &amp; projectiles\weapons</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
