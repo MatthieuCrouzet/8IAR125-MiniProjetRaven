@@ -399,8 +399,10 @@ void Raven_Bot::FireWeapon(Vector2D pos)
 	m_FuzzyModule.Fuzzify("TimeVisible", timeVisible);
 	m_FuzzyModule.Fuzzify("Deviation", deviation);
 
-	double m_dDeviationScore = m_FuzzyModule.DeFuzzify("DeviationShot", FuzzyModule::max_av);
-	Vector2D vDeviation = Vec2DNormalize(GetTargetBot()->Velocity()) * m_dDeviationScore;
+	double m_dDeviationScore = m_FuzzyModule.DeFuzzify("Deviation", FuzzyModule::max_av);
+
+	Vector2D vVelocity = Vec2DNormalize(GetTargetBot()->Velocity());
+	Vector2D vDeviation = vVelocity * m_dDeviationScore;
 
 	m_pWeaponSys->ShootAt(pos + vDeviation);
 }
@@ -414,8 +416,8 @@ void Raven_Bot::InitializeFuzzyModule()
 	FuzzyVariable& DistToTarget = m_FuzzyModule.CreateFLV("DistToTarget");
 
 	FzSet& Target_Close = DistToTarget.AddLeftShoulderSet("Target_Close", 0, 30, 100);
-	FzSet& Target_Medium = DistToTarget.AddTriangularSet("Target_Medium", 30, 75, 300);
-	FzSet& Target_Far = DistToTarget.AddRightShoulderSet("Target_Far", 75, 300, 1000);
+	FzSet& Target_Medium = DistToTarget.AddTriangularSet("Target_Medium", 30, 90, 300);
+	FzSet& Target_Far = DistToTarget.AddRightShoulderSet("Target_Far", 90, 300, 1000);
 
 	FuzzyVariable& Velocity = m_FuzzyModule.CreateFLV("Velocity");
 
@@ -432,8 +434,8 @@ void Raven_Bot::InitializeFuzzyModule()
 	FuzzyVariable& Deviation = m_FuzzyModule.CreateFLV("Deviation");
 
 	FzSet& No_Deviation = Deviation.AddLeftShoulderSet("No_Deviation", 0, 0, 0);
-	FzSet& Low_Deviation = Deviation.AddTriangularSet("Low_Deviation", 0, 75, 300);
-	FzSet& High_Deviation = Deviation.AddRightShoulderSet("High_Deviation", 75, 300, 1000);
+	FzSet& Low_Deviation = Deviation.AddTriangularSet("Low_Deviation", 0, 50, 75);
+	FzSet& High_Deviation = Deviation.AddRightShoulderSet("High_Deviation", 50, 90, 100);
 
 
 	m_FuzzyModule.AddRule(FzAND(Target_Close, Velocity_Low, Time_Low), No_Deviation);
